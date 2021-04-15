@@ -134,30 +134,33 @@ struct Stuff : Intersectable {
 	Hit intersect(const Ray& ray) {
 		Hit hit;
 		vec3 center(0, 0, 0);
-		float radius = 0.3f;
+		/*float radius = 0.3f;
 		vec3 dist = ray.start - center;
 		float a1 = dot(ray.dir, ray.dir);
 		float b1 = dot(dist, ray.dir) * 2.0f;
 		float c1 = dot(dist, dist) - radius * radius;
 		float discr1 = b1 * b1 - 4.0f * a1 * c1;
-		if (discr1 < 0) return hit;
-		float a = 20.1f;
+		if (discr1 < 0) return hit;*/
+		float a = 7.1f;
 		float b = 7.1f;
-		float c = 7.1f;
+		float c = 5.1f;
 		float A = a*ray.dir.x*ray.dir.x + b*ray.dir.y*ray.dir.y;
 		float B = 2*a*ray.start.x*ray.dir.x + 2*b*ray.start.y*ray.dir.y - c*ray.dir.z;
 		float C = a*ray.start.x*ray.start.x + b*ray.start.y*ray.start.y - c*ray.start.z - 1;
 		float discr = B * B - 4.0f * A * C;
 		if (discr < 0) return hit;
+		
 		float sqrt_discr = sqrtf(discr);
 		float t1 = (-B + sqrt_discr) / 2.0f / A;	// t1 >= t2 for sure
 		float t2 = (-B - sqrt_discr) / 2.0f / A;
 		if (t1 <= 0) return hit;
-		hit.t = (t2 > 0) ? t2 : t1;
 		vec3 p1 = ray.start + ray.dir * t1;
 		vec3 p2 = ray.start + ray.dir * t2;
+		if (length(p1) > 0.3f && length(p2) > 0.3f) return hit;
+		hit.t = (t2 > 0) ? t2 : t1;
+		
 
-		if (length(p1) <= 0.3f && length(p2) > 0.3f) {
+		if (length(p1) < 0.3f && length(p2) >= 0.3f) {
 			hit.t = t1;
 		}
 		hit.position = ray.start + ray.dir * hit.t;
@@ -281,7 +284,7 @@ public:
 						{14,10,19,7,6},
 						{6,7,20,11,15} };
 	DodecaHedron() {
-		vec3 kd(0.5f, 0.3f, 0.5f), ks(2, 2, 2);
+		vec3 kd(0.5f, 0.3f, 0.5f), ks(0, 0, 0);
 		Material* material = new RoughMaterial(kd, ks, 50);
 
 		vec3 n(1,1,1), kappa(5,4,3);
@@ -420,7 +423,7 @@ public:
 					vec3 halfway = normalize(-ray.dir + lightDir);
 					float cosDelta = dot(hit.normal, halfway);
 					if (cosDelta > 0) outRadiance = (outRadiance + light->Le * hit.material->ks * powf(cosDelta, hit.material->shininess));
-					//outRadiance = outRadiance / (l * l);
+					//outRadiance = outRadiance / (dot(light->position, hit.position));
 				}
 			}
 		}
