@@ -254,11 +254,9 @@ public:
 };
 
 struct Light {
-	vec3 direction;
 	vec3 position;
 	vec3 Le;
-	Light(vec3 _direction, vec3 _position, vec3 _Le) {
-		direction = normalize(_direction);
+	Light(vec3 _position, vec3 _Le) {
 		position = _position;
 		Le = _Le;
 	}
@@ -276,8 +274,8 @@ public:
 		camera.set(eye, lookat, vup, fov);
 
 		La = vec3(0.2f, 0.2f, 0.2f);
-		vec3 lightDirection(1, 1, 1), lightPosition(0,0.5f,0.5f), Le(1, 1, 1);
-		lights.push_back(new Light(lightDirection, lightPosition,  Le));
+		vec3 lightPosition(0,0.5f,0.5f), Le(1, 1, 1);
+		lights.push_back(new Light(lightPosition,  Le));
 
 		vec3 kd(0.3f, 0.2f, 0.1f), ks(2, 2, 2);
 		Material* material = new RoughMaterial(kd, ks, 50);
